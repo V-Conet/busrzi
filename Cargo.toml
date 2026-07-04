@@ -1,0 +1,8 @@
+[package]
+name = "busrzi"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = { version = "0.8.9", features = ["tracing"] }
+tracing = "0.1.44"
