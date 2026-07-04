@@ -14,7 +14,7 @@ const INDEX: &[&str] = &[
     "/index.htm",
     "/index.php",
     "/index.aspx",
-    "/index"
+    "/index",
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -58,11 +58,7 @@ impl CounterService {
 
     /// 记录一次页面访问，返回最新的站点 UV、站点 PV、页面 PV。
     #[tracing::instrument(skip_all, fields(host = %target.host, path = %target.path, is_new_uv))]
-    pub async fn record(
-        &self,
-        target: &Target,
-        is_new_uv: bool,
-    ) -> Result<CounterData, AppError> {
+    pub async fn record(&self, target: &Target, is_new_uv: bool) -> Result<CounterData, AppError> {
         let mut conn = self.redis.clone();
 
         let site_pv_key = site_pv_key(&target.host);
@@ -186,7 +182,11 @@ pub fn normalize_target(host: &str, path: &str) -> Target {
     } else if let Some(suffix) = INDEX.iter().find(|s| path.ends_with(**s)) {
         // 去掉 "/index*" 后缀
         let head = &path[..path.len() - suffix.len()];
-        path = Cow::Owned(if head.is_empty() { "/".into() } else { head.into() });
+        path = Cow::Owned(if head.is_empty() {
+            "/".into()
+        } else {
+            head.into()
+        });
     }
 
     // 去掉多余的尾部斜杠（根路径除外）
@@ -211,7 +211,6 @@ pub fn normalize_target(host: &str, path: &str) -> Target {
 
     Target { host, path }
 }
-
 
 fn site_uv_key(host: &str) -> String {
     format!("{KEY_NS}:site:uv:{host}")
@@ -377,10 +376,7 @@ mod tests {
 
     #[test]
     fn test_target_from_url_ignores_query_and_fragment() {
-        let target = target_from_url(
-            "https://example.com/blog/post?id=1&page=2#section"
-        )
-        .unwrap();
+        let target = target_from_url("https://example.com/blog/post?id=1&page=2#section").unwrap();
         assert_eq!(target.host, "example.com");
         assert_eq!(target.path, "/blog/post");
     }
@@ -394,10 +390,7 @@ mod tests {
 
     #[test]
     fn test_target_from_url_various_schemes() {
-        for url in [
-            "http://example.com/blog",
-            "https://example.com/blog",
-        ] {
+        for url in ["http://example.com/blog", "https://example.com/blog"] {
             let target = target_from_url(url).unwrap();
             assert_eq!(target.host, "example.com");
             assert_eq!(target.path, "/blog");
@@ -420,7 +413,13 @@ mod tests {
         };
         assert_eq!(site_uv_key("example.com"), "busrzi:site:uv:example.com");
         assert_eq!(site_pv_key("example.com"), "busrzi:site:pv:example.com");
-        assert_eq!(page_pv_key(&target), "busrzi:page:pv:example.com:/blog/post");
-        assert_eq!(page_inventory_key("example.com"), "busrzi:site:pages:example.com");
+        assert_eq!(
+            page_pv_key(&target),
+            "busrzi:page:pv:example.com:/blog/post"
+        );
+        assert_eq!(
+            page_inventory_key("example.com"),
+            "busrzi:site:pages:example.com"
+        );
     }
 }

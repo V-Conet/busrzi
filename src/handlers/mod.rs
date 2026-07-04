@@ -1,8 +1,8 @@
 pub mod log;
 pub mod script;
 
-use axum::http::{header, Method};
 use crate::counter::CounterService;
+use axum::http::{Method, header};
 use serde::Serialize;
 use tower_http::cors::{Any, CorsLayer};
 

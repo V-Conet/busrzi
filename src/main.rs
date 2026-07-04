@@ -4,8 +4,8 @@ mod error;
 mod handlers;
 
 use axum::{
-    routing::{get, post},
     Router,
+    routing::{get, post},
 };
 use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
@@ -14,7 +14,7 @@ use tracing::info;
 use crate::{
     config::Config,
     counter::CounterService,
-    handlers::{cors_layer, AppState},
+    handlers::{AppState, cors_layer},
 };
 
 #[tokio::main]

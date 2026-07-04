@@ -1,9 +1,9 @@
-use axum::{extract::State, Json};
+use axum::{Json, extract::State};
 use serde::Deserialize;
 use tracing::{debug, warn};
 
 use crate::{
-    counter::{target_from_url, CounterData},
+    counter::{CounterData, target_from_url},
     error::AppError,
     handlers::{ApiResponse, AppState, CACHE_CONTROL_API},
 };
@@ -52,5 +52,8 @@ pub async fn post_log(
     headers.insert(axum::http::header::PRAGMA, "no-cache".parse().unwrap());
     headers.insert(axum::http::header::EXPIRES, "0".parse().unwrap());
 
-    Ok((headers, Json(ApiResponse::success("counters updated", data))))
+    Ok((
+        headers,
+        Json(ApiResponse::success("counters updated", data)),
+    ))
 }

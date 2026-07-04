@@ -1,7 +1,7 @@
 use axum::{
+    Json,
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json,
 };
 use serde_json::json;
 
@@ -21,8 +21,16 @@ impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, code, message) = match &self {
             AppError::InvalidUrl(msg) => (StatusCode::BAD_REQUEST, "invalid_url", msg.clone()),
-            AppError::Redis(_) => (StatusCode::INTERNAL_SERVER_ERROR, "redis_error", self.to_string()),
-            AppError::Io(_) => (StatusCode::INTERNAL_SERVER_ERROR, "internal_error", self.to_string()),
+            AppError::Redis(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "redis_error",
+                self.to_string(),
+            ),
+            AppError::Io(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "internal_error",
+                self.to_string(),
+            ),
         };
 
         let body = Json(json!({
