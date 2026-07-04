@@ -4,7 +4,6 @@
 /.vscode
 /.env
 /valkey_data
-/.cargo
 /bench_results
 
 *__pycache__/
