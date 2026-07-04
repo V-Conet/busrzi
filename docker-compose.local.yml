@@ -1,0 +1,25 @@
+services:
+  api:
+    container_name: busrzi-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: 8080
+      REDIS_URL: ${REDIS_URL:-}
+      DEBUG: ${DEBUG:-false}
+      # SCRIPT_PATH: ${SCRIPT_PATH:-}
+    ports:
+      - "${PORT:-8080}:8080"
+    restart: unless-stopped
+    depends_on:
+      - valkey
+      
+  valkey:
+    container_name: busrzi-valkey
+    image: valkey/valkey:9.1-alpine
+    command: > 
+      valkey-server 
+      --appendonly yes
+    volumes:
+      - "./valkey_data:/data"
