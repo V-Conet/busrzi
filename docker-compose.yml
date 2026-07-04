@@ -3,21 +3,21 @@ services:
     container_name: busrzi-api
     image: ghcr.io/v-conet/busrzi:latest
     environment:
-      PORT: 8080
+      WEB_PORT: 8080
       REDIS_URL: ${REDIS_URL:-}
       DEBUG: ${DEBUG:-false}
       # SCRIPT_PATH: ${SCRIPT_PATH:-}
     ports:
-      - "${PORT:-8080}:8080"
+      - "${WEB_PORT:-8080}:${PORT:-8080}"
     restart: unless-stopped
     depends_on:
       - valkey
-      
+
   valkey:
     container_name: busrzi-valkey
     image: valkey/valkey:9.1-alpine
-    command: > 
-      valkey-server 
+    command: >
+      valkey-server
       --appendonly yes
     volumes:
       - "./valkey_data:/data"

@@ -197,10 +197,10 @@ def main():
     body_file = tmpdir / "bodies.txt"
 
     scenarios = [
-        Scenario("hot_page", DURATION, CONNECTIONS, "POST", "application/json", "hot", 1000, f"{BASE_URL}/api/collect"),
-        Scenario("multi_host", DURATION, CONNECTIONS, "POST", "application/json", "multi_host", 10000, f"{BASE_URL}/api/collect"),
-        Scenario("multi_page", DURATION, CONNECTIONS, "POST", "application/json", "multi_page", 10000, f"{BASE_URL}/api/collect"),
-        Scenario("steady", "60s", CONNECTIONS, "POST", "application/json", "steady", 50000, f"{BASE_URL}/api/collect"),
+        Scenario("hot_page", DURATION, CONNECTIONS, "POST", "application/json", "hot", 1000, f"{BASE_URL}/api/counter"),
+        Scenario("multi_host", DURATION, CONNECTIONS, "POST", "application/json", "multi_host", 10000, f"{BASE_URL}/api/counter"),
+        Scenario("multi_page", DURATION, CONNECTIONS, "POST", "application/json", "multi_page", 10000, f"{BASE_URL}/api/counter"),
+        Scenario("steady", "60s", CONNECTIONS, "POST", "application/json", "steady", 50000, f"{BASE_URL}/api/counter"),
     ]
 
     results: list[tuple[str, dict]] = []
@@ -228,7 +228,7 @@ def main():
     )
     api_proc = subprocess.Popen(
         ["oha", "-z", DURATION, "-c", str(CONNECTIONS // 2), "--no-tui", "--output-format", "csv",
-         "-m", "POST", "-T", "application/json", "-Z", str(body_file), f"{BASE_URL}/api/collect"],
+         "-m", "POST", "-T", "application/json", "-Z", str(body_file), f"{BASE_URL}/api/counter"],
         stdout=subprocess.PIPE, text=True,
     )
     js_stdout, _ = js_proc.communicate()
@@ -242,7 +242,7 @@ def main():
     results.append(("mixed_api", summarize(api_df)))
     print("  /js:")
     print_summary(summarize(js_df))
-    print("  /api/collect:")
+    print("  /api/counter:")
     print_summary(summarize(api_df))
 
     # 并发梯度
@@ -255,7 +255,7 @@ def main():
             name=f"ramp_{c}",
             duration=DURATION,
             connections=c,
-            url=f"{BASE_URL}/api/collect",
+            url=f"{BASE_URL}/api/counter",
             method="POST",
             content_type="application/json",
             body_file=body_file,

@@ -39,7 +39,7 @@
 
   function init() {
     var script = document.currentScript;
-    var apiUrl = script ? new URL('/api/collect', script.src).href : '/api/collect';
+    var apiUrl = script ? new URL('/api/counter', script.src).href : '/api/counter';
 
     var host = location.host || 'unknown-host';
     var cookieName = 'busrzi_uv_' + host.replace(/[^a-zA-Z0-9_-]/g, '_');

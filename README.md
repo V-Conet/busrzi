@@ -4,7 +4,7 @@
 
 ## 功能
 
-- `POST /api/collect`：记录页面访问，返回站点 PV、页面 PV、站点 UV
+- `POST /api/counter`：记录页面访问，返回站点 PV、页面 PV、站点 UV
 - `GET /js`：返回浏览器嵌入脚本，自动更新页面计数
 - Redis/Valkey 持久化，支持可配置 TTL
 - 跨域支持、缓存控制、结构化日志
@@ -47,7 +47,7 @@ cargo run --release
 
 ## API
 
-### POST /api/collect
+### POST /api/counter
 
 请求：
 
@@ -81,7 +81,7 @@ cargo run --release
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `REDIS_URL` | 是 | - | Redis/Valkey 连接 URL |
-| `PORT` | 否 | `8080` | 监听端口，`PORT` 优先于 `API_PORT` |
+| `PORT` | 否 | `8080` | busrzi 监听端口，`PORT` |
 | `SCRIPT_PATH` | 否 | `assets/client.js` | 客户端 JS 文件路径 |
 | `TTL_DAYS` | 否 | `90` | 计数数据 TTL（天），`0` 表示永不过期 |
 | `RUST_LOG` | 否 | `info` | 日志级别，例如 `busrzi=debug` |
@@ -114,7 +114,7 @@ cargo test
 
 # 手动验证
 curl http://localhost:8080/js
-curl -X POST http://localhost:8080/api/collect \
+curl -X POST http://localhost:8080/api/counter \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com/blog/post","is_new_uv":true}'
 ```

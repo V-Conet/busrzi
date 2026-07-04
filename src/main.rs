@@ -50,7 +50,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     let app = Router::new()
-        .route("/api/collect", post(handlers::log::post_log))
+        .route("/api/counter", post(handlers::log::post_log))
         .route("/js", get(handlers::script::get_script))
         .layer(cors_layer())
         .layer(TraceLayer::new_for_http())
